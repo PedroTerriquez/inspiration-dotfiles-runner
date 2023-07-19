@@ -1,0 +1,61 @@
+echo "Updating MacOS"
+softwareupdate --all --install --force
+
+echo "Setting ZSH as the default shell"
+chsh -s /bin/zsh
+
+echo "Running Cesar's dotfiles"
+cd $HOME
+mkdir .config .config/nvim
+touch init.vim
+curl -L raw.github.com/cesargomez89/inspiration-dotfiles/master/bin/dotfiles | bash
+
+echo "Installing rbenv with Homebrew and adding some gems"
+brew install rbenv
+echo 'if which rbenv > /dev/null; then eval "$(rbenv init - zsh)"; fi' >> ~/.zshrc
+rbenv install --latest
+rbenv global $(rbenv versions --bare)
+gem install solargraph
+gem install rubocop
+
+echo "Setting up SSH key"
+ssh-keygen -t rsa -b 4096 -C "pedroterriquez@hotmail.com" -f ~/.ssh/id_rsa
+eval "$(ssh-agent -s)"
+ssh-add -K ~/.ssh/id_rsa
+echo "SSH key has been set up."
+
+echo "Setting Git global configuration"
+git config --global user.email "pedroterriquez@hotmail.com"
+git config --global user.name "Pedro Terriquez"
+echo "Git global configuration has been set."
+
+echo "Copying the public SSH key to clipboard"
+pbcopy < ~/.ssh/id_rsa.pub
+open "https://github.com/settings/ssh/new"
+
+echo "When open Vim use ', + pi' to install everything"
+echo "For Tmux use Prefix + I to install all the plugins)"
+
+echo "Adjusting macOS system preferences"
+echo "Disabling press-and-hold for keys"
+defaults write -g ApplePressAndHoldEnabled -bool false
+
+echo "Setting key repeat rate"
+defaults write -g KeyRepeat -int 1
+
+echo "Setting initial key repeat delay"
+defaults write -g InitialKeyRepeat -int 10
+
+echo "Enabling tap to click for trackpad"
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+
+echo "Enabling password prompt after screensaver or sleep"
+defaults write com.apple.screensaver askForPassword -bool true
+defaults write com.apple.screensaver askForPasswordDelay -int 0
+hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0}]}'
+
+echo "Opening webpage for Postgres Manager"
+open https://postgresapp.com/downloads.html
+
+echo "Opening font file on Finder..."
+open ~/.dotfiles/files
