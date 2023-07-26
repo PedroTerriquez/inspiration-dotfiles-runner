@@ -56,3 +56,6 @@ hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x70
 
 echo "Opening webpage for Postgres Manager"
 open https://postgresapp.com/downloads.html
+
+echo "Opening SwitchBar browser picker for Mac"
+open https://switchbar.com/en/
